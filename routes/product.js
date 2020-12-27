@@ -8,39 +8,20 @@ const {
     remove,
     update,
     list,
-    listRelated,
-    listCategories,
-    listBySearch,
-    photo,
-    listSearch
+    listRelated
 } = require("../controllers/product");
-const { requireSignin, isAuth } = require("../controllers/auth");
+const { userPropertyToken,isToken,requireSignin,isAuth } = require("../controllers/auth");
 const { userById } = require("../controllers/user");
 
 // routes
 router.get("/product/:productId", read);
-router.post("/product/create/:userId", requireSignin, isAuth, create);
-router.delete(
-    "/product/:productId/:userId",
-    requireSignin,
-    isAuth,
-    isAdmin,
-    remove
-);
-router.put(
-    "/product/:productId/:userId",
-    requireSignin,
-    isAuth,
-    isAdmin,
-    update
-);
+router.post("/product/create/:userId", userPropertyToken,isToken,requireSignin, isAuth, create);
+router.delete("/product/:productId/:userId",userPropertyToken,isToken,requireSignin,isAuth,remove);
+router.put( "/product/:productId/:userId",userPropertyToken,isToken,requireSignin,isAuth,update);
 
 router.get("/products", list);
-router.get("/products/search", listSearch);
 router.get("/products/related/:productId", listRelated);
-router.get("/products/categories", listCategories);
-router.post("/products/by/search", listBySearch);
-router.get("/product/photo/:productId", photo);
+
 
 // params
 router.param("userId", userById);

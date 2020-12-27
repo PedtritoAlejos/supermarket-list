@@ -2,16 +2,16 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    signup,
-    signin,
-    signout
+    registrarse,
+    login,
+    cerrarSesion
 } = require("../controllers/auth");
-const { userSignupValidator } = require("../validator");
+const { validaRegistro,validaLogin } = require("../validator");
 
 // routes
-router.post("/signup", userSignupValidator, signup);
-router.post("/signin", signin);
-router.get("/signout", signout);
+router.post("/registrarse", validaRegistro, registrarse);
+router.post("/login",validaLogin, login);
+router.get("/cerrarSesion", cerrarSesion);
 
 module.exports = router;
 

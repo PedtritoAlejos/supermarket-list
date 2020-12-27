@@ -36,11 +36,6 @@ const categorySchema = new mongoose.Schema({
         type: ObjectId,
         ref: "Category",
         required: true
-    },
-    icon: {
-        data: Buffer,
-        contentType: String
-
     }
 
 

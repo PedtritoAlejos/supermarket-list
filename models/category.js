@@ -8,17 +8,6 @@ const categorySchema = new mongoose.Schema(
             required:true,
             maxlength:50,
             unique:true
-        },
-        description:{
-            type: String,
-            required:true,
-            maxlength:100,
-            
-        },
-        icon:{
-            data:Buffer,
-            contentType:String
-
         }
 
     },

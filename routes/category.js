@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { userPropertyToken,isToken,requireSignin,isAuth } = require("../controllers/auth");
 
 const {
     create,
@@ -9,25 +10,30 @@ const {
     remove,
     list
 } = require("../controllers/category");
-const { requireSignin, isAuth } = require("../controllers/auth");
+
 const { userById } = require("../controllers/user");
+const {validaCategory} = require("../validator");
 
 // routes
-router.get("/category/:categoryId", read);
-router.post("/category/create/:userId", requireSignin, isAuth, create);
+router.get("/category/:categoryId",userPropertyToken,isToken, read);
+router.post("/category/create/:userId",userPropertyToken, isToken,requireSignin, isAuth, validaCategory,create);
 router.put(
     "/category/:categoryId/:userId",
+    userPropertyToken,
+    isToken,
     requireSignin,
     isAuth,
     update
 );
 router.delete(
     "/category/:categoryId/:userId",
+    userPropertyToken,
+    isToken,
     requireSignin,
     isAuth,
     remove
 );
-router.get("/categories", list);
+router.get("/categories",userPropertyToken,isToken,requireSignin, list);
 
 // params
 router.param("categoryId", categoryById);

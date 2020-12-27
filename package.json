@@ -4,7 +4,7 @@
   "description": "Este proyecto tiene como objetivo hacer la vida mas fácil a la hora de realizar la lista del supermercado. ",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon app.js -e js,yaml"
   },
   "repository": {
     "type": "git",

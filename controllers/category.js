@@ -53,7 +53,10 @@ exports.remove = (req, res) => {
             });
         }
         res.json({
-            message: "Categoría eliminada"
+            rc:0,
+            msg:'Categoría eliminada',
+            data:[]
+           
         });
     });
 };

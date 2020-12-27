@@ -21,7 +21,10 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     salt: String,
-    avatar: String,
+    avatar:{
+        type:String,
+        default:''
+    } ,
     history: {
         type: Array,
         default: []
@@ -56,6 +59,15 @@ userSchema.methods = {
         } catch (err) {
             return "";
         }
+    },
+    toJson:function(){
+        let user = this;
+        let userObject = user.toObject();
+        
+        delete userObject.hashed_password;
+        delete userObject.salt;
+
+        return userObject;
     }
 };
 

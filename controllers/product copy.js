@@ -13,33 +13,77 @@ exports.productById = (req, res, next, id) => {
         .exec((err, product) => {
             if (err || !product) {
                 return res.status(400).json({
-                    rc:-10,
-                    msg:'Producto no encontrado',
-                    data:[]
+                    error: "Producto no encontrado"
                 });
             }
             req.product = product;
             next();
         });
 };
+
 exports.read = (req, res) => {
-    return  res.json(req.product);
+    req.product.photo = undefined;
+    return res.json(req.product);
 };
 
 exports.create = (req, res) => {
-    const product = new Product(req.body);
-    product.save( (err,productDB) =>{
-        if(err || !productDB){
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+    form.parse(req, (err, fields, files) => {
+        if (err) {
             return res.status(400).json({
-                error:errorHandler(err),
+                error: "Imagen no puede ser cargada"
             });
         }
-        res.json({
-            product
+        // check for all fields
+        const {
+            name,
+            description,
+            price,
+            category,
+            quantity,
+            shipping
+        } = fields;
+
+        if (
+            !name ||
+            !description ||
+            !price ||
+            !category ||
+            !quantity ||
+            !shipping
+        ) {
+            return res.status(400).json({
+                error: "Todos los campos son requeridos"
+            });
+        }
+
+        let product = new Product(fields);
+
+        // 1kb = 1000
+        // 1mb = 1000000
+
+        if (files.photo) {
+            if (files.photo.size > 1000000) {
+                return res.status(400).json({
+                    error: "Imagen no puede ser mayor a un 1 MB "
+                });
+            }
+            product.photo.data = fs.readFileSync(files.photo.path);
+            product.photo.contentType = files.photo.type;
+        }
+
+        product.save((err, result) => {
+            if (err) {
+                return res.status(400).json({
+                    error: errorHandler(err)
+                });
+            }
+            res.json(result);
         });
     });
+};
 
-} 
 exports.remove = (req, res) => {
     let product = req.product;
     product.remove((err, deletedProduct) => {
@@ -49,32 +93,45 @@ exports.remove = (req, res) => {
             });
         }
         res.json({
-            rc:0,
-            msg: "Producto eliminado",
-            data:[deletedProduct]
+            message: "Producto eliminado"
         });
     });
 };
 
 exports.update = (req, res) => {
-   
-
-    let product = req.product;
-    product.name = req.body.name;
-    product.description = req.body.description;
-    product.quantity = req.body.quantity;
-    product.format = req.body.format;
-    product.unit = req.body.unit;
-    product.category = req.body.category;
-        
-    product.save((err, result) => {
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+    form.parse(req, (err, fields, files) => {
         if (err) {
             return res.status(400).json({
-                error: errorHandler(err)
+                error: "Imagen no puede ser cargada"
             });
         }
 
-    res.json({rc:0,msg:"Producto actualizado",data:[result]});
+        let product = req.product;
+        product = _.extend(product, fields);
+
+        // 1kb = 1000
+        // 1mb = 1000000
+
+        if (files.photo) {
+            if (files.photo.size > 1000000) {
+                return res.status(400).json({
+                    error: "Image should be less than 1mb in size"
+                });
+            }
+            product.photo.data = fs.readFileSync(files.photo.path);
+            product.photo.contentType = files.photo.type;
+        }
+
+        product.save((err, result) => {
+            if (err) {
+                return res.status(400).json({
+                    error: errorHandler(err)
+                });
+            }
+            res.json(result);
+        });
     });
 };
 
@@ -91,14 +148,14 @@ exports.list = (req, res) => {
     let limit = req.query.limit ? parseInt(req.query.limit) : 6;
 
     Product.find()
-        .select("")
+        .select("-photo")
         .populate("category")
         .sort([[sortBy, order]])
         .limit(limit)
         .exec((err, products) => {
             if (err) {
                 return res.status(400).json({
-                    error: "Products no encontrado"
+                    error: "Products not found"
                 });
             }
             res.json(products);
@@ -189,7 +246,53 @@ exports.listBySearch = (req, res) => {
         });
 };
 
+exports.photo = (req, res, next) => {
+    if (req.product.photo.data) {
+        res.set("Content-Type", req.product.photo.contentType);
+        return res.send(req.product.photo.data);
+    }
+    next();
+};
 
+exports.listSearch = (req, res) => {
+    // create query object to hold search value and category value
+    const query = {};
+    // assign search value to query.name
+    if (req.query.search) {
+        query.name = { $regex: req.query.search, $options: "i" };
+        // assigne category value to query.category
+        if (req.query.category && req.query.category != "All") {
+            query.category = req.query.category;
+        }
+        // find the product based on query object with 2 properties
+        // search and category
+        Product.find(query, (err, products) => {
+            if (err) {
+                return res.status(400).json({
+                    error: errorHandler(err)
+                });
+            }
+            res.json(products);
+        }).select("-photo");
+    }
+};
 
+exports.decreaseQuantity = (req, res, next) => {
+    let bulkOps = req.body.order.products.map(item => {
+        return {
+            updateOne: {
+                filter: { _id: item._id },
+                update: { $inc: { quantity: -item.count, sold: +item.count } }
+            }
+        };
+    });
 
-
+    Product.bulkWrite(bulkOps, {}, (error, products) => {
+        if (error) {
+            return res.status(400).json({
+                error: "Could not update product"
+            });
+        }
+        next();
+    });
+};
