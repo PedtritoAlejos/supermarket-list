@@ -15,6 +15,7 @@ const authRoutes = require("./routes/auth");
 const categoryRoutes = require("./routes/category");
 const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/product");
+const ticketRoutes = require("./routes/ticket");
 
 const app = express();
 
@@ -50,6 +51,7 @@ app.use("/api",authRoutes);
 app.use("/api",categoryRoutes);
 app.use("/api",userRoutes);
 app.use("/api",productRoutes);
+app.use("/api",ticketRoutes);
 
 
 

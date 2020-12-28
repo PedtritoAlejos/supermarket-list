@@ -8,7 +8,7 @@ exports.ticketById = (req, res, next, id) => {
     Ticket.findById(id).exec((err, ticketDB) => {
         if (err || !ticketDB) {
             return res.status(404).json({
-                error: "Categoría no existe."
+                error: "Ticket no existe."
             });
         }
         req.ticket = ticketDB;
@@ -18,13 +18,13 @@ exports.ticketById = (req, res, next, id) => {
 
 exports.create = (req, res) => {
     const ticket = new Ticket(req.body);
-    ticket.save((err, ticketDB) => {
+    ticket.save((err, ticket) => {
         if (err) {
             return res.status(400).json({
                 error: errorHandler(err)
             });
         }
-        res.json( { ticketDB });
+        res.json( { rc:0,msg:'Ticket creado.',data:[ticket] });
     });
 };
 
@@ -34,14 +34,21 @@ exports.read = (req, res) => {
 
 exports.update = (req, res) => {
     const ticket = req.ticket;
+
     ticket.name = req.body.name;
+    ticket.description= req.body.description,
+    ticket.products = req.body.products
     ticket.save((err, data) => {
         if (err) {
             return res.status(400).json({
                 error: errorHandler(err)
             });
         }
-        res.json(data);
+        res.json({
+            rc:0,
+            msg:'Ticket actualizado',
+            data:[data]
+        });
     });
 };
 
@@ -54,8 +61,9 @@ exports.remove = (req, res) => {
             });
         }
         res.json({
-            message: "Categoría eliminada",
-            ticket:data
+            rc:0,
+            msg: "Ticket eliminado",
+            data:[data]
         });
     });
 };
