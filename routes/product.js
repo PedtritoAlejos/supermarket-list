@@ -15,12 +15,12 @@ const { userById } = require("../controllers/user");
 
 // routes
 router.get("/product/:productId", read);
+router.get("/products", list);
 router.post("/product/create/:userId", userPropertyToken,isToken,requireSignin, isAuth, create);
 router.delete("/product/:productId/:userId",userPropertyToken,isToken,requireSignin,isAuth,remove);
 router.put( "/product/:productId/:userId",userPropertyToken,isToken,requireSignin,isAuth,update);
 
-router.get("/products", list);
-router.get("/products/related/:productId", listRelated);
+
 
 
 // params

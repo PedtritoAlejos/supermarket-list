@@ -1,5 +1,7 @@
 const Category = require("../models/category");
-const { errorHandler } = require("../helpers/dbErrorHandler");
+const {
+    errorHandler
+} = require("../helpers/dbErrorHandler");
 
 // middlewares rest
 
@@ -7,7 +9,9 @@ exports.categoryById = (req, res, next, id) => {
     Category.findById(id).exec((err, category) => {
         if (err || !category) {
             return res.status(404).json({
-                error: "Categoría no existe."
+                rc: -10,
+                msg: "Categoría no existe.",
+                data: []
             });
         }
         req.category = category;
@@ -20,10 +24,16 @@ exports.create = (req, res) => {
     category.save((err, data) => {
         if (err) {
             return res.status(400).json({
-                error: errorHandler(err)
+                rc: -10,
+                msg: errorHandler(err),
+                data: []
             });
         }
-        res.json( { data });
+        res.json({
+            rc: 0,
+            msg: 'Categoría creada',
+            data: [data]
+        });
     });
 };
 
@@ -53,10 +63,10 @@ exports.remove = (req, res) => {
             });
         }
         res.json({
-            rc:0,
-            msg:'Categoría eliminada',
-            data:[]
-           
+            rc: 0,
+            msg: 'Categoría eliminada',
+            data: []
+
         });
     });
 };

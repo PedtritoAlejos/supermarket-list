@@ -15,7 +15,7 @@ const { userById } = require("../controllers/user");
 const {validaCategory} = require("../validator");
 
 // routes
-router.get("/tickets",userPropertyToken,isToken,requireSignin, list);
+router.get("/tickets/:userId",userPropertyToken,isToken,requireSignin,list);
 router.get("/ticket/:ticketId",userPropertyToken,isToken, read);
 router.post("/ticket/create/:userId",userPropertyToken, isToken,requireSignin, isAuth, validaCategory,create);
 router.put( "/ticket/:ticketId/:userId", userPropertyToken,isToken,requireSignin, isAuth,update);

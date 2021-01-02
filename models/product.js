@@ -4,7 +4,7 @@ const {
 } = mongoose.Schema;
 
 
-const categorySchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
@@ -36,6 +36,11 @@ const categorySchema = new mongoose.Schema({
         type: ObjectId,
         ref: "Category",
         required: true
+    },
+    user:{
+        type:ObjectId,
+        ref:"User",
+        required:true
     }
 
 
@@ -43,4 +48,4 @@ const categorySchema = new mongoose.Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model("Product", categorySchema);
+module.exports = mongoose.model("Product", productSchema);

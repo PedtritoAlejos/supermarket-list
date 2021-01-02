@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         trim: true,
         required: true,
-        unique: true
+        index:{unique: true}
     },
 
     hashed_password: {
@@ -24,11 +24,11 @@ const userSchema = new mongoose.Schema({
     avatar:{
         type:String,
         default:''
-    } ,
-    history: {
-        type: Array,
-        default: []
-    }
+    },
+    role: {
+        type: Number,
+        default: 0
+    } 
 }, {
     timestamps: true
 });
