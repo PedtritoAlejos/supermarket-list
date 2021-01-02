@@ -12,13 +12,13 @@ const {
 } = require("../controllers/ticket");
 
 const { userById } = require("../controllers/user");
-const {validaCategory} = require("../validator");
+const {validaTicket} = require("../validator");
 
 // routes
 router.get("/tickets/:userId",userPropertyToken,isToken,requireSignin,list);
 router.get("/ticket/:ticketId",userPropertyToken,isToken, read);
-router.post("/ticket/create/:userId",userPropertyToken, isToken,requireSignin, isAuth, validaCategory,create);
-router.put( "/ticket/:ticketId/:userId", userPropertyToken,isToken,requireSignin, isAuth,update);
+router.post("/ticket/create/:userId",userPropertyToken, isToken,requireSignin, isAuth, validaTicket,create);
+router.put( "/ticket/:ticketId/:userId", userPropertyToken,isToken,requireSignin, isAuth,validaTicket,update);
 router.delete( "/ticket/:ticketId/:userId", userPropertyToken, isToken,requireSignin,isAuth,remove);
 
 

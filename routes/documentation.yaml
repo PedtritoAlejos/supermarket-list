@@ -1,0 +1,369 @@
+schemes:
+- "http"
+paths:
+  /api/login:
+    post:
+      tags:
+      - "login"
+      summary: "login es requerido"
+      description: "Este end-point retorna un token, este token es necesario para poder consumir los distintos end-point"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "el objeto json con propiedades email y password son requeridos para hacer uso de los end-point"
+        required: true
+        schema:
+            type: "object"
+            required:
+                - "email"
+                - "password"
+            properties:
+                email:
+                    type: "string"
+                password:
+                    type: "string"
+      responses:
+        "200":
+          description: "REQUEST VALIDO"
+          schema:
+            type: "object"
+            properties:
+                rc:
+                    type: "integer"
+                    example: 0
+                msg:
+                    type: "string"
+                    example: "Login exitoso"
+                data:
+                    type: "array"
+                    items:
+                        properties:
+                            token:
+                                type: "string"
+                                example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmYwZDlhYzZhODkxYjAxODY5ZjFhMWYiLCJpYXQiOjE2MDk2MjIwNzcsImV4cCI6MTYwOTg4MTI3N30.tQ5YsvpPUZMO6EsLWdPkX88fDspoiCOHl6fUd9hCXb'
+                            user: 
+                                type: "object"
+                                properties:
+                                  _id:
+                                    type: "string"
+                                    example: "5ff0d9ac6a891b01869f1a12"
+                                  name: 
+                                    type: "string"
+                                    example: "admin"
+                                  email:
+                                    type: "string"
+                                    example: "admin@gmail.com"
+
+        "500":
+            description: "ERROR SERVIDOR"
+            schema:
+                type: "object"
+                properties:
+                    rc:
+                        type: "integer"
+                        example: -10
+                    msg: 
+                        type: "string"
+                    data:
+                        type: "array"
+                        example: []
+        "400":
+            description: "REQUEST INVALIDO"
+            schema:
+                type: "object"
+                properties:
+                    rc:
+                        type: "integer"
+                        example: -10
+                    msg:
+                        type: "string"
+                    data:
+                        type: "array"
+                        example: []
+  /api/users/{userId}:
+    get:
+      tags:
+      - "usuario"
+      summary: 'token de tipo "Bearer" en el header es requerido, retorna todos los usuarios (se requiere ser admin)'
+      description: "end-point retorna todos los usuario registrados en la base de datos  para hacer uso de los end-point es necesario tener el token (se requiere ser admin)"
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        required: true
+        type: "string"
+        description: "token de tipo bearer"
+        example: "Authorization Bearer TOKEN"
+      - name: "userId"
+        in: "path"
+        description: "Id del usuario logueado" 
+        required: true
+        type: "integer"
+        format: "int64"
+
+      responses:
+        "200" :
+            description: "REQUEST VALIDO"
+            schema:
+                type: "object"
+                properties:
+                    rc:
+                        type: "integer"
+                        example: 0
+                    msg:
+                        type: "string"
+                        example: "listado"
+                    data:
+                        type: "array"
+                        items:
+                            properties:
+                                avatar:
+                                    type: "string"
+                                    example: ""
+                                role:
+                                    type: "integer"
+                                    example: "1"
+                                _id:
+                                    type: "string"
+                                    example: "5ff0d9ac6a891b0186925361f"
+                                name:
+                                    type: "admin"
+                                    example: "son"
+                                email:
+                                    type: "string"
+                                    example: "admin@gmail.com"
+                                createdAt:
+                                    type: "string"
+                                    example: "2021-01-02T20:38:04.561Z"
+                                updatedAt:
+                                    type: "string"
+                                    example: "2021-02-02T20:38:04.561Z"
+  /api/user/{userId}:
+    get:
+        tags:
+        -   "usuario"
+        summary:    'Retorna información del usuario buscado'
+        description:    "(El token es obligatorio) Retorna el usuario buscado por su ID"
+        parameters:
+        -   name:   "Authorization"
+            in: "header"
+            required: true
+            type: "string"
+            description: "token de tipo bearer"
+            example: "Authorization Bearer TOKEN"
+
+        -   name:   "userId"
+            in: "path"
+            required: true
+            type: "string"
+            description: "id del usuario a buscar"
+            example: "5fd76e5c043e95609e54912f"
+
+        responses:
+            "200"   :
+                description:    "REQUEST VALIDO"
+                schema:
+                    type:   "object"
+                    properties:
+                        rc:
+                            type: "integer"
+                            example: 0
+                        msg:
+                            type:   "string"
+                            example:    "success"
+                        data:
+                            type:   "array"
+                            items:
+                                properties:
+                                avatar:
+                                    type: "string"
+                                    example: ""
+                                role:
+                                    type: "integer"
+                                    example: "1"
+                                _id:
+                                    type: "string"
+                                    example: "5ff0d9ac6a891b0186925361f"
+                                name:
+                                    type: "admin"
+                                    example: "son"
+                                email:
+                                    type: "string"
+                                    example: "admin@gmail.com"
+                                createdAt:
+                                    type: "string"
+                                    example: "2021-01-02T20:38:04.561Z"
+                                updatedAt:
+                                    type: "string"
+                                    example: "2021-02-02T20:38:04.561Z"
+            "500"   :
+                description:    "ERROR SERVIDOR"
+                schema:
+                    type:   "object"
+                    properties:
+                        rc:
+                            type: "integer"
+                            example: -10
+                        msg:
+                            type:   "string"
+                            
+                        data:
+                            type:   "array"
+                            items:
+                                properties:
+                                    error:
+                                        type:   "object"
+
+
+
+
+
+
+/api/user/{userId}:
+
+    put:
+        tags:
+        -   "usuario"
+        summary:    'Modifica un usuario por su ID'
+        description:    "(El token es obligatorio) "
+        parameters:
+        -   name:   "Authorization"
+            in: "header"
+            required: true
+            type: "string"
+            description: "token de tipo bearer"
+            example: "Authorization Bearer TOKEN"
+
+        -   name:   "userId"
+            in: "path"
+            required: true
+            type: "string"
+            description: "ID del usuario a editar"
+            example: "ID del usuario a editar obligatorio"
+        
+        -   in: "body"
+            name: "body"
+            description: "Enviar los campos a editar"
+            required: true
+            schema:
+                type:   "object"
+                properties:
+                    name:
+                        type:   "string"
+                        example:    "admin"
+
+                    email:
+                        type:   "string"
+                        example:    "admin@hotmail.com"
+                    avatar:
+                        type:   "string"
+                        example:    "https://avatar/1234/4"
+                    
+            
+
+
+        responses:
+            "200"   :
+                description:    "REQUEST VALIDO"
+                schema:
+                    type:   "object"
+                    properties:
+                        rc:
+                            type: "integer"
+                            example: 0
+                        msg:
+                            type:   "string"
+                            example:    "actualización realizada"
+                        data:
+                            type:   "array"
+                            example: [{}]
+
+            "500"   :
+                description:    "ERROR SERVIDOR"
+                schema:
+                    type:   "object"
+                    properties:
+                        rc:
+                            type: "integer"
+                            example: -10
+                        msg:
+                            type:   "string"
+                            
+                        data:
+                            type:   "array"
+                            example: [{}]
+
+    delete:
+        tags:
+        -   "usuario"
+        summary:    'Auto eliminación '
+        description:    "(El token es obligatorio) "
+        parameters:
+        -   name:   "Authorization"
+            in: "header"
+            required: true
+            type: "string"
+            description: "token de tipo bearer"
+            example: "Authorization Bearer TOKEN"
+
+        -   name:   "userId"
+            in: "path"
+            required: true
+            type: "string"
+            description: "5ff0e162a6b4782047f16a8a"
+            example: ""
+        
+                    
+            
+
+
+        responses:
+            "200"   :
+                description:    "REQUEST VALIDO"
+                schema:
+                    type:   "object"
+                    properties:
+                        rc:
+                            type: "integer"
+                            example: 0
+                        msg:
+                            type:   "string"
+                            example:    "Usuario eliminado"
+                        data:
+                            type:   "array"
+                            example: [{}]
+
+            "500"   :
+                description:    "ERROR SERVIDOR"
+                schema:
+                    type:   "object"
+                    properties:
+                        rc:
+                            type: "integer"
+                            example: -10
+                        msg:
+                            type:   "string"
+                            
+                        data:
+                            type:   "array"
+                            example: [{}]
+            "403"   :
+                description:    "ACCESO DENEGADO"
+                schema:
+                    type:   "object"
+                    properties:
+                        rc:
+                            type: "integer"
+                            example: -10
+                        msg:
+                            type:   "string"
+                            
+                        data:
+                            type:   "array"
+                            example: [{}]                      
+                        
+
+

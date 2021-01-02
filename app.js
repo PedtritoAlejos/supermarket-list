@@ -7,8 +7,8 @@ const cors = require("cors");
 const expressValidator = require("express-validator");
 require("dotenv").config();
 const {isJsonValidRequest} = require("./validator/index");
-//const swaggerJsDoc = require("swagger-jsdoc");
-//const swaggerUi = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 
 
 const authRoutes = require("./routes/auth");
@@ -53,12 +53,43 @@ app.use("/api",userRoutes);
 app.use("/api",productRoutes);
 app.use("/api",ticketRoutes);
 
+const port = process.env.PORT || 3000;
 
+/**
+ *  CONFIGURACIÓN DOCUMENTACION API
+ */
+// Extended: https://swagger.io/specification/#infoObject
 
-const port = process.env.PORT || 8000;
+const swaggerOptions = {
+    swaggerDefinition: {
+        swagger:"2.0",
+        info: {
+            version: "1.0.0",
+            title: "SUPERMARKET-LIST API",
+            description: "Contiene la definición de los end-point del Servicio Rest SUPERMARKET-LIST, para hacer uso de los end-point es necesario enviar el token (bearer authorization). Puedes encontrar el código fuente en el repositorio : [SUPERMARKET-LIST](https://github.com/PedtritoAlejos/supermarket-list)",
+            contact: {
+                name: "pedroalejosb@gmail.com"
+            },
+            servers: [`http://localhost:${port}`]
+        }
+        
+    },
+    // definition the apis with swagger 
+    apis: ['./routes/*.yaml']
+}
+// final definitions with swagger-express
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+/** #################################################### */
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
+
+
+
+
+
 
 

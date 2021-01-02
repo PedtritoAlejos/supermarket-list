@@ -51,7 +51,7 @@ exports.remove = (req, res) => {
         }
         res.json({
             rc: 0,
-            msg: 'Usuario eliminada',
+            msg: 'Usuario eliminado',
             data: [data.toJson()]
 
         });
@@ -74,7 +74,7 @@ exports.list = (req, res) => {
 
 
     User.find()
-        .select("")
+        .select("-salt -hashed_password -__v")
         .sort([
             [sortBy, order]
         ])

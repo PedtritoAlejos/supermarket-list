@@ -7,18 +7,17 @@ const {
     read,
     remove,
     update,
-    list,
-    listRelated
+    list
 } = require("../controllers/product");
 const { userPropertyToken,isToken,requireSignin,isAuth } = require("../controllers/auth");
 const { userById } = require("../controllers/user");
-
+const {validaProducto} = require("../validator");
 // routes
 router.get("/product/:productId", read);
 router.get("/products", list);
-router.post("/product/create/:userId", userPropertyToken,isToken,requireSignin, isAuth, create);
+router.post("/product/create/:userId", userPropertyToken,isToken,requireSignin, isAuth,validaProducto, create);
 router.delete("/product/:productId/:userId",userPropertyToken,isToken,requireSignin,isAuth,remove);
-router.put( "/product/:productId/:userId",userPropertyToken,isToken,requireSignin,isAuth,update);
+router.put( "/product/:productId/:userId",userPropertyToken,isToken,requireSignin,isAuth,validaProducto,update);
 
 
 

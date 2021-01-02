@@ -23,6 +23,7 @@ router.put(
     isToken,
     requireSignin,
     isAuth,
+    validaCategory,
     update
 );
 router.delete(
