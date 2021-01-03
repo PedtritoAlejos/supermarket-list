@@ -54,3 +54,7 @@ DB Connected
 
 ### DOCUMENTACIÓN CON SWAGGER
 Link : http://localhost:3000/api-docs/
+
+
+![This is a alt text.](http://45.236.131.46/swagger.png "This is a sample image.")
+
