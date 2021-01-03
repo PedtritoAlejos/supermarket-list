@@ -1,7 +1,7 @@
 # supermarket-list
 ### INSTALACIÓN DEL PROYECTO 
 
- - Descargar el proyecto desde github
+ - Descargar el proyecto desde github y posicionarse dentro del proyecto descargado "supermarket-list"
 ```sh
 $ git clone https://github.com/PedtritoAlejos/supermarket-list.git 
 ```
